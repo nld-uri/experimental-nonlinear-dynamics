@@ -13,7 +13,7 @@ function [xc, L] = mtlines(x, fs, NW, K, p, pad)
 %         L  -- one row per line: [f0 (Hz), amplitude A, phase (rad), F]
 %
 % Needs finv (Statistics and Machine Learning Toolbox).
-% Written by David Chelidze for the second edition.
+% Written by David Chelidze.
 
 x = x(:) - mean(x); N = numel(x);
 if nargin < 3 || isempty(NW), NW = 4; end

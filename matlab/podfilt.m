@@ -10,7 +10,15 @@ function [ xf ] = podfilt( x, l, m, d, q, f, u )
 %   q -- local embedding dimension (q < d)
 % OPTIONAL INPUT:
 %   f -- f = 1 (default) for cloud based or f = 0 strand based POD
-%   u -- u = 1 (default) do not adjust for curvature, and u = 0 adjust 
+%   u -- curvature handling (cloud based scheme):
+%        u = 1 (default) do not adjust for curvature;
+%        u = 0 temporal correction, c'_k = (c_{k-1} + c_{k+1})/2;
+%        u = 2 spatial correction, eq. (curvcorr): c'_k is the mean of the
+%              mass centres of the l spatial neighbors of point k.
+%        Both corrections apply 2 c_k - c'_k and differ only in which
+%        points supply c'_k. The cloud scheme with u = 0 diverges under
+%        repeated application; u = 2 does not. The strand scheme accepts
+%        u = 0 and ignores u = 2.
 % OUTPUT:
 %   xf -- filtered time series in matrix form
 %
@@ -86,6 +94,13 @@ if f == 1 % do nearest neighbor projection
         [U, S, V] = svd( ( Y - b(:,k)*ones(1,l) )'*R, 0 ); % POD
         C = V(:,1:q)*S(1:q,1:q)*U(:,1:q)'; % projection
         Yh(:,k) = R\C(:,1) + b(:,k); % adjustment
+    end
+    if u == 2 % spatial correction, eq. (curvcorr)
+        % pqi indexes the unpadded y; b is indexed over the padded yp,
+        % where y(:,j) sits at column j + np. Entry (i,k,j) of the
+        % reshaped array is b(i, pqi(k,j) + np).
+        cp = mean(reshape(b(:, pqi(:) + np), d, npr, l), 3); % c'_k
+        Yh = Yh + b - cp; % move the projection centre to 2 c_k - c'_k
     end
     if u == 0
         Yh = Yh(:,2:npr-1) + b(:,2:end-1) - (b(:,1:end-2) + b(:,3:end))/2;

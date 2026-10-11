@@ -1,4 +1,4 @@
-function yp = loclin( ym, yq, n, N, w )
+function yp = loclin( ym, yq, n, N, w, tw, iq )
 % LOCLIN local linear modeling for prediction
 %
 % INPUT:
@@ -14,6 +14,9 @@ function yp = loclin( ym, yq, n, N, w )
 %        (last requested) neighbor, so the scale follows the local
 %        density and the n-th neighbor gets half the weight of a
 %        coincident point.
+%   tw -- optional Theiler window (default 0: no exclusion); used with iq
+%   iq -- optional column of ym that yq is (in-sample query); at step k
+%         the columns j with |j - (iq+k-1)| <= tw are not used as neighbors
 % OUTPUT:
 %   yp -- predicted phase space trajectory starting from yq point
 %
@@ -30,27 +33,39 @@ function yp = loclin( ym, yq, n, N, w )
 %
 % written and copyrighted by David Chelidze on 12/4/17
 
-d = size(ym,1);
+[d, M] = size(ym);
 ns = createns(ym(:,1:end-1)','NSMethod','kdtree','Distance','euclidean');
 yp = [yq zeros(d,N)];
 if nargin < 5 || w ~= 1 % use no weighting
     w = 0;
 end
+if nargin < 7 % no in-sample query index: no Theiler exclusion
+    tw = 0; iq = 0;
+end
+excl = tw > 0;
+if excl
+    kq = min(n + 2*tw + 1, M - 1); % extra neighbors to discard
+else
+    kq = n;
+end
 
 for k = 1:N
-    [indx, dis] = knnsearch(ns,yq','Distance','euclidean','k',n);
-    Yn = [ym(:,indx); ones(1,n)];
-    Ynp1 = ym(:,indx+1);
-    if w == 1 % use weighting, scale a = distance to the n-th neighbor
-        a = dis(end);
-        if a > 0
-            W = diag(a^4 ./ ( dis.^4 + a^4 )); % weighting fun (can make your own)
-        else
-            W = eye(n);
-        end
-        yp(:,k+1) = ((Ynp1*W*Yn')/(Yn*W*Yn'))*[yq; 1];
-    else
-        yp(:,k+1) = ((Ynp1*Yn')/(Yn*Yn'))*[yq; 1];
+    [indx, dis] = knnsearch(ns,yq','Distance','euclidean','k',kq);
+    if excl % Theiler exclusion around the current trajectory point
+        keep = abs(indx - (iq + k - 1)) > tw;
+        indx = indx(keep); dis = dis(keep);
+        indx = indx(1:n); dis = dis(1:n);
     end
+    Yn = [ym(:,indx); ones(1,n)];   % (d+1) x n design X~
+    Ynp1 = ym(:,indx+1);            % d x n images
+    a = dis(end);                   % distance to the n-th neighbor
+    if w == 1 && a > 0
+        sw = sqrt(a^4 ./ ( dis.^4 + a^4 ))'; % square roots of weights, n x 1
+    else
+        sw = ones(n,1);
+    end
+    % weighted least squares on sqrt(W)*X~' directly (QR), no Gram matrix
+    B = ( (sw.*Yn') \ (sw.*Ynp1') )';     % d x (d+1) = [A, b]
+    yp(:,k+1) = B*[yq; 1];
     yq = yp(:,k+1);
 end

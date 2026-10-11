@@ -19,7 +19,7 @@ function [f, G, out] = psdmt(x, fs, NW, K, adaptive, nfft)
 %   S.Gavg, S.lam, S.K -- plain-average estimate, taper concentrations, K
 %
 % Needs dpss (Signal Processing Toolbox).
-% Written by David Chelidze for the second edition.
+% Written by David Chelidze.
 
 x = x(:) - mean(x); N = numel(x);
 if nargin < 3 || isempty(NW), NW = 4; end

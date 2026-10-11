@@ -1,7 +1,7 @@
 % CHK_PSDMT  Checks of psdmt.m and mtlines.m with MATLAB's own dpss/finv.
 % Run from matlab/:  >> chk_psdmt
 % Reference values from python/psdmt.py are in ../reports/mt_test/.
-% Written for the second edition.
+%
 R = fullfile('..', 'reports', 'mt_test');
 x = load(fullfile(R, 'x.txt')); fs = 50;
 

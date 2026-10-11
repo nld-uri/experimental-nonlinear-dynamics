@@ -14,7 +14,7 @@ function [f, S] = psdwelch(x, fs, L, D, win, y)
 %   Gxy = one-sided cross-spectrum, coh = |Gxy|^2/(Gxx Gyy),
 %   H1 = Gxy./Gxx,  H2 = Gyy./conj(Gxy).
 %
-% Written by David Chelidze for the second edition.
+% Written by David Chelidze.
 
 if nargin < 4 || isempty(D), D = floor(L/2); end
 if nargin < 5 || isempty(win), win = 'hann'; end
