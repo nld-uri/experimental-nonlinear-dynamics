@@ -101,7 +101,7 @@ if nargout == 0
     grid on, pbaspect([1.618, 1, 1])
     xlabel('$\ln(\epsilon),\; \langle \ln(\epsilon) \rangle$','Interpreter',...
         'Latex','FontSize',14)
-    ylabel('$\hat D_P, \bar D_P$','Interpreter','Latex','FontSize',14)
+    ylabel('$\hat D_\mathrm{P}, \bar D_\mathrm{P}$','Interpreter','Latex','FontSize',14)
     legend('fixed distance', 'fixed mass','location','south')
     axis([min(lnD(1,2)) max(lnD(end,2)) 0 ...
         ceil(max(max(diff(lnD).\diff(lnN))))])
