@@ -11,12 +11,12 @@ The code is written by David Chelidze, Nonlinear Dynamics Laboratory, University
 | `matlab/` | MATLAB functions used in the book (Appendix A listings) |
 | `python/` | Python ports of the same functions, the scripts that draw the book's figures (`mkfig_*.py`), and numerical checks (`chk_*.py`, `test_python.py`) |
 | `data/` | The two measured records used in the book; see `data/README.md` |
-| `book/` | Draft PDF of the book (draft of 11 October 2026, 436 pages) |
-| `figures/` | Output folder for the figure scripts |
+| `book/` | Draft PDF of the book (draft of 11 October 2026, 439 pages) |
+| `figures/` | Output folder for the figure scripts; also holds the two Blender renders and their anchor files (see below) |
 
 ## The book
 
-`book/Chelidze-Cusumano_Nonlinear-Time-Series-Analysis_draft.pdf` is the current draft of the book (11 October 2026, 436 pages; the file name stays the same as the draft is updated, and earlier drafts are in the repository history), *Nonlinear Time Series Analysis: Experimental Nonlinear Dynamics from Measured Records*. Figure captions name the script in `python/` that draws each figure. The draft PDF is copyright the authors and is not covered by the MIT license, which applies to the code and data only.
+`book/Chelidze-Cusumano_Nonlinear-Time-Series-Analysis_draft.pdf` is the current draft of the book (11 October 2026, 439 pages; the file name stays the same as the draft is updated, and earlier drafts are in the repository history), *Nonlinear Time Series Analysis: Experimental Nonlinear Dynamics from Measured Records*. Figure captions name the script in `python/` that draws each figure. The draft PDF is copyright the authors and is not covered by the MIT license, which applies to the code and data only.
 
 ## Functions
 
@@ -50,6 +50,13 @@ cd python
 python3 test_python.py          # checks of the Python ports
 python3 mkfig_amiplots.py       # draws one book figure into ../figures/
 ```
+
+Two figures use a rendered 3D model: the fatigue rig of Fig. 17.8 and the archer of Fig. 1.5.
+`render_rig_blender.py` and `render_archer_blender.py` build and render the models with Blender's
+Python module (`pip install bpy`; tested with bpy 5.2.2, Python 3.13) and write
+`figures/rig_render.png`, `figures/archer_render.png` and their `*_anchors.json` files. Those
+outputs are included, so `mkfig_rig.py` and `mkfig_target.py` redraw the labelled figures with
+Matplotlib and Pillow alone.
 
 MATLAB: add `matlab/` to the path. `chk_psdmt.m` checks `psdmt.m` and `mtlines.m`.
 
