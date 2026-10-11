@@ -11,12 +11,12 @@ The code is written by David Chelidze, Nonlinear Dynamics Laboratory, University
 | `matlab/` | MATLAB functions used in the book (Appendix A listings) |
 | `python/` | Python ports of the same functions, the scripts that draw the book's figures (`mkfig_*.py`), and numerical checks (`chk_*.py`, `test_python.py`) |
 | `data/` | The two measured records used in the book; see `data/README.md` |
-| `book/` | Draft PDF of the book (draft of 10 October 2026, 384 pages) |
+| `book/` | Draft PDF of the book (draft of 11 October 2026, 436 pages) |
 | `figures/` | Output folder for the figure scripts |
 
 ## The book
 
-`book/Chelidze-Cusumano_Nonlinear-Time-Series-Analysis_draft-2026-10-10.pdf` is a draft of the book, *Nonlinear Time Series Analysis: Experimental Nonlinear Dynamics from Measured Records*. Figure captions name the script in `python/` that draws each figure. The draft PDF is copyright the authors and is not covered by the MIT license, which applies to the code and data only.
+`book/Chelidze-Cusumano_Nonlinear-Time-Series-Analysis_draft.pdf` is the current draft of the book (11 October 2026, 436 pages; the file name stays the same as the draft is updated, and earlier drafts are in the repository history), *Nonlinear Time Series Analysis: Experimental Nonlinear Dynamics from Measured Records*. Figure captions name the script in `python/` that draws each figure. The draft PDF is copyright the authors and is not covered by the MIT license, which applies to the code and data only.
 
 ## Functions
 
