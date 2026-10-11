@@ -24,7 +24,7 @@ chardist    : characteristic distance from each window to each reference point
 charpos     : characteristic position (m columns per reference point)
 track       : centre the tracking matrix, take its SOD, return SOVs and SOCs
 
-Copyright by David Chelidze. Written for the second edition.
+Copyright by David Chelidze.
 """
 import numpy as np
 from gsvd import sod

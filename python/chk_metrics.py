@@ -2,6 +2,9 @@
 
 1. Lowest-harmonic ratios <q^2>/<qdot^2> for q = t, t^2 (raw and centred) and
    sin, sin^2 (centred), against the closed forms quoted in the text.
+1b. Slowest-coordinate statement: SOD of small spans of smooth functions of a
+   drift phi(t) (phi = t, quarter sine, whole-period sine, half-period cosine);
+   derivative energy of jumps and cusps against N.
 2. Far-field expansion  E||y-x|| = ||r|| + (tr C - rhat'C rhat)/(2||r||) + O(||r||^-2),
    r = y - xbar, on a non-Gaussian cloud (logistic-map delay vectors).
 3. Noise corollary: isotropic noise of variance s^2 per coordinate shifts D by
@@ -39,6 +42,65 @@ s1 = np.sin(w*tt); s2 = np.sin(w*tt)**2
 print(f" q=sin   ctr: {ratio(s1-s1.mean(), dtt):.5f}   closed form 1/w^2    = {1/w**2:.5f}")
 print(f" q=sin^2 ctr: {ratio(s2-s2.mean(), dtt):.5f}   closed form 1/(4w^2) = {1/(4*w**2):.5f}")
 print(f" q=sin^2 raw: {ratio(s2, dtt):.5f}   closed form 3/(4w^2) = {3/(4*w**2):.5f}")
+
+# ------------------------------------- 1b. slowest-coordinate statement
+# Ported from verify/item1_check.py.  SOD of small feature spans built from
+# smooth functions of a scalar drift phi(t): which function of phi does the
+# first SOC return?  Ratios use first differences, as SOD does.
+print("\n== 1b. slowest coordinate in a span (SOD of smooth functions of phi)")
+from scipy.linalg import eigh as _eigh
+
+def ratio_fd(q, t):
+    q = q - q.mean()
+    return np.mean(q**2)/np.mean((np.diff(q)/np.diff(t))**2)
+
+def sod_span(F, t):
+    """SOD of the column span of F (N x k), columns centred:
+    R_Y psi = lam R_Ydot psi, lam = <q^2>/<qdot^2>, descending."""
+    F = F - F.mean(0)
+    Fd = np.diff(F, axis=0)/np.diff(t)[:, None]
+    lam, Psi = _eigh(F.T @ F/len(F), Fd.T @ Fd/len(Fd))
+    idx = np.argsort(lam)[::-1]
+    return lam[idx], Psi[:, idx], F @ Psi[:, idx]
+
+def r2fit(y, x, deg):
+    p = np.polyfit(x, y, deg)
+    return 1 - np.var(y - np.polyval(p, x))/np.var(y)
+
+def span_report(name, phi, F):
+    lam, Psi, Qs = sod_span(F, t)
+    q = Qs[:, 0]; c = np.corrcoef(q, phi)[0, 1]; q = q*np.sign(c)
+    psi = Psi[:, 0]*np.sign(c); psi = psi/np.max(np.abs(psi))
+    print(f"  {name:34s} SOV1/T^2 = {lam[0]/T**2:.5f}  SPM1 = {np.round(psi, 5)}"
+          f"  R^2 affine = {r2fit(q, phi, 1):.4f}  quadratic = {r2fit(q, phi, 2):.4f}")
+
+pw = lambda phi, k: np.column_stack([phi**j for j in range(1, k+1)])
+phi = t                                                   # monotone linear drift
+q1, q2 = t - T/2, np.cos(np.pi*t/T)
+print(f" phi = t: ratio(t-T/2) = {ratio_fd(q1, t):.5f} (T^2/12 = {T**2/12:.5f}),"
+      f" ratio(cos(pi t/T)) = {ratio_fd(q2, t):.5f} (T^2/pi^2 = {T**2/np.pi**2:.5f})")
+span_report("{t-T/2, cos(pi t/T)}", phi, np.column_stack([q1, q2]))
+span_report("{phi, phi^2}", phi, pw(phi, 2))
+span_report("{phi, phi^2, phi^3}", phi, pw(phi, 3))
+span_report("{phi, ..., phi^5}", phi, pw(phi, 5))
+phi = np.sin(np.pi*t/(2*T))                               # quarter-sine (Rossler law)
+print(f" phi = sin(pi t/2T): ratio(phi) = {ratio_fd(phi, t):.5f}"
+      f" (closed (1/2-4/pi^2) 8T^2/pi^2 = {(0.5-4/np.pi**2)*8*T**2/np.pi**2:.5f}),"
+      f" ratio(phi^2) = {ratio_fd(phi**2, t):.5f} (T^2/pi^2)")
+span_report("{phi, phi^2}", phi, pw(phi, 2))
+a_ = 0.1 + 0.3*phi
+span_report("{a, a^2}, a = 0.1 + 0.3 phi", a_, np.column_stack([a_, a_**2]))
+phi = np.sin(2*np.pi*t/T)                                 # whole period
+span_report("sin(2 pi t/T): {phi, ..., phi^5}", phi, pw(phi, 5))
+phi = -np.cos(np.pi*t/T)                                  # half period
+span_report("-cos(pi t/T): {phi, ..., phi^5}", phi, pw(phi, 5))
+print(" derivative energy <qdot^2> vs N, T = 1 (jump, sqrt cusp, Hoelder-1/4, C^1):")
+for n_ in [100, 10000, 1000000]:
+    tt_ = np.linspace(0, T, n_); s_ = tt_ - T/2
+    e = [np.mean((np.diff(q)/np.diff(tt_))**2) for q in
+         [(s_ > 0).astype(float), np.sqrt(np.clip(s_, 0, None)),
+          np.clip(s_, 0, None)**0.25, tt_**2]]
+    print(f"  N={n_:8d}: " + "  ".join(f"{v:10.4g}" for v in e))
 
 # ------------------------------------------------- helpers: logistic map, D
 def logistic_orbit(r, n, burn=500, x0=None):

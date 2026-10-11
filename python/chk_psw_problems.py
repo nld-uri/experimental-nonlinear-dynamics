@@ -4,7 +4,7 @@ Every value stated as an expected answer in those three problems is
 produced here, from data/psw_fatigue_2005.mat alone. Run from python/;
 about a minute.
 
-Copyright by David Chelidze. Written for the second edition.
+Copyright by David Chelidze.
 """
 import numpy as np
 import scipy.linalg as la

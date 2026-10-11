@@ -44,7 +44,6 @@ RAW_CANDIDATES = [
     os.path.join(_HERE, "..", "data", "cd_raw_strain_2005.mat"),
     os.path.join(_HERE, "..", "..", "cd_raw_strain_2005.mat"),
     os.path.join(_HERE, "..", "..", "cd.mat"),
-    "/mnt/user-data/uploads/cd.mat",
 ]
 
 

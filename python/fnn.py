@@ -13,7 +13,7 @@ and every distance is in units of sigma_x. Delay vectors are forward,
 x_i = [x_i, x_{i+tau}, ..., x_{i+(d-1)tau}], and only the N - d tau
 points whose (d+1)-th coordinate x_{i+d tau} exists are used.
 
-Copyright by David Chelidze. Python version for the second edition.
+Copyright by David Chelidze. Python version.
 """
 import numpy as np
 from scipy.spatial import cKDTree

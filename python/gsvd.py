@@ -25,7 +25,7 @@ generalized singular values c/s in DESCENDING order, so column 0 is the
 smoothest mode. MATLAB returns them ascending, which is why sodfilt.m
 has to fliplr its factors and this module's callers do not.
 
-Copyright by David Chelidze. Python port for the second edition.
+Copyright by David Chelidze. Python port.
 """
 import numpy as np
 

@@ -14,7 +14,7 @@ mu the complex line amplitude estimate at each frequency (a line
 A cos(2 pi f0 t + phi) has |mu(f0)| = A/2), and nu the equivalent degrees
 of freedom of the adaptive estimate at each frequency.
 
-Copyright by David Chelidze. Written for the second edition.
+Copyright by David Chelidze.
 """
 import numpy as np
 from scipy.signal.windows import dpss

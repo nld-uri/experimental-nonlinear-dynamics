@@ -11,7 +11,7 @@ distance to its r-th (farthest) neighbor. The weight is the same in
 lyapunov.m. For r = 1 -- the value the header recommends -- the single
 weight cancels and the result is independent of it.
 
-Copyright by David Chelidze. Python port for the second edition.
+Copyright by David Chelidze. Python port.
 """
 import numpy as np
 from scipy.spatial import cKDTree

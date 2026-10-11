@@ -4,7 +4,7 @@ One script computes the whole evaluation of Section sec:nr_eval, so that every
 figure of the chapter and both signal-to-noise tables come from the same records.
 
 Records (N = 20 000 samples each, standardized to zero mean and unit variance;
-the first edition used 60 000, reduced here to keep the run to about half an hour
+an earlier version used 60 000, reduced here to keep the run to about half an hour
 on two cores -- the captions and table headers say so):
 
   Lorenz    x of (10, 28, 8/3) from (x,y,z) = (5,-5,20), dt = 0.01,
@@ -32,7 +32,7 @@ or a single job with
 
     python3 _ch14data.py job <record> <noise> <POD|SOD>
 
-Copyright by David Chelidze. Written for the second edition.
+Copyright by David Chelidze.
 """
 import os
 import sys

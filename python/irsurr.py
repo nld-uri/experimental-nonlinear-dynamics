@@ -3,7 +3,7 @@
 Python port of irsurr.m (Appendix A.8), after Schreiber and Schmitz,
 Surrogate time series, Physica D 142 (2000) 346-382.
 
-Copyright by David Chelidze. Python port for the second edition.
+Copyright by David Chelidze. Python port.
 """
 import numpy as np
 

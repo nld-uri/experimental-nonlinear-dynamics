@@ -10,7 +10,7 @@ one-sided (f >= 0) in units of x^2/Hz, so that sum(G)*f[1] ~ var(x).
 Gxy is the one-sided cross-spectrum, coh the ordinary coherence,
 H1 = Gxy/Gxx and H2 = Gyy/Gyx the two FRF estimators (x = input).
 
-Copyright by David Chelidze. Written for the second edition.
+Copyright by David Chelidze.
 """
 import numpy as np
 from scipy.signal import get_window

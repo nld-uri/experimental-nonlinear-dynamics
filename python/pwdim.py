@@ -2,7 +2,7 @@
 
 Python port of pwdim.m (Appendix A.3).
 
-Copyright by David Chelidze. Python port for the second edition.
+Copyright by David Chelidze. Python port.
 """
 import numpy as np
 from scipy.spatial import cKDTree

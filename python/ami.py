@@ -9,7 +9,7 @@ One deliberate difference: MATLAB extends the outer bin edges to -Inf
 and +Inf, which numpy.histogram will not accept. The outer edges are
 widened by one bin instead, which includes the same points.
 
-Copyright by David Chelidze. Python port for the second edition.
+Copyright by David Chelidze. Python port.
 """
 import numpy as np
 

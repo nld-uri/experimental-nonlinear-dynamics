@@ -17,7 +17,7 @@ density and the farthest strand gets half the weight of the base one.
 It costs roughly r times as much and is worth it only on noisy records;
 see the table in Section 13.2.
 
-Copyright by David Chelidze. Python port for the second edition.
+Copyright by David Chelidze. Python port.
 """
 import numpy as np
 from scipy.spatial import cKDTree

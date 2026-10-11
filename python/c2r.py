@@ -3,7 +3,7 @@
 Python port of c2r.m (Appendix A.2). Euclidean distances, temporal
 correlations removed by a Theiler window.
 
-Copyright by David Chelidze. Python port for the second edition.
+Copyright by David Chelidze. Python port.
 """
 import numpy as np
 

@@ -3,7 +3,7 @@
 Python port of podfilt.m (Appendix A.4). Works on both flow and map
 generated data.
 
-Copyright by David Chelidze. Python port for the second edition.
+Copyright by David Chelidze. Python port.
 """
 import numpy as np
 from nlutil import embed, pad, unshift

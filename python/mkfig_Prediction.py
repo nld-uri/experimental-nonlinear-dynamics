@@ -10,6 +10,12 @@ prediction starts at the first point after them. Embedding: d = 3, tau = 6,
 r = 16 nearest neighbours. Records normalized to unit variance, so the errors
 are in units of the standard deviation of the record.
 
+Split in time with a gap: the model uses delay vectors 0..NMOD-1 (samples up to
+x_{NMOD-1+(D-1)TAU}); every starting vector begins at column NMOD+GAP or later,
+GAP = (D-1)TAU, so no sample of a test vector or of its forecast entered the model.
+The plotted coordinate is the LAST one of the iterated delay vector, so the lead
+h counts samples beyond the last observed sample x_{s+(D-1)TAU} of the start.
+
 (a) the true continuation and the two predictions over NPRED steps from one
     starting point; (b) their errors; (c) the RMS error over NENS starting points
     against the horizon, with the exponential fit over the range FITH and the
@@ -24,8 +30,9 @@ AL, BE, A, B = 9.0, 100/7, 8/7, 5/7
 DT, TTRANS, NMOD, NPRED, NENS = 0.1, 200.0, 20000, 600, 200
 D, TAU, R = 3, 6, 16
 LAM1 = 0.3326                      # largest Lyapunov exponent of the model (QR, Jacobian)
-FITH = (20, 110)                   # horizon range (samples) of the exponential fit:
+FITH = (8, 98)                     # lead range (samples) of the exponential fit:
 # the range over which the ensemble RMS error grows on a straight line on log axes
+GAP = (D - 1)*TAU                  # samples between the model and the first test vector
 
 
 def chua(n, dt=DT):
@@ -36,26 +43,26 @@ def chua(n, dt=DT):
     return solve_ivp(f, (0, t[-1]), [0.0, 0.0, 0.6], t_eval=t, rtol=1e-9, atol=1e-12).y[0]
 
 
-x = chua(NMOD + NPRED + NENS + (D - 1)*TAU + 10)
+x = chua(NMOD + GAP + NPRED + NENS + (D - 1)*TAU + 10)
 x = (x - x.mean())/x.std()
 y, n = embed(x, D, TAU)                 # (D, n)
 ym = y[:, :NMOD]                        # modeling trajectory
 
 def predict(start, npred, w):
     yp = loclin(ym, y[:, start], R, npred, w=w)
-    return yp[0]                        # first coordinate = x_{start + k}
+    return yp[-1]                       # last coordinate = x_{start+(D-1)TAU+k}: lead k
 
-k0 = NMOD
-true = y[0, k0:k0 + NPRED + 1]
+k0 = NMOD + GAP
+true = y[-1, k0:k0 + NPRED + 1]
 p0 = predict(k0, NPRED, 0)
 p1 = predict(k0, NPRED, 1)
 
 # ensemble RMS error against horizon
 rng = np.random.default_rng(0)
-starts = NMOD + rng.permutation(n - NMOD - NPRED - 1)[:NENS]
+starts = NMOD + GAP + rng.permutation(n - NMOD - GAP - NPRED - 1)[:NENS]
 E = {0: np.zeros(NPRED + 1), 1: np.zeros(NPRED + 1)}
 for s in starts:
-    t = y[0, s:s + NPRED + 1]
+    t = y[-1, s:s + NPRED + 1]
     for w in (0, 1):
         E[w] += (predict(s, NPRED, w) - t)**2
 for w in (0, 1):
@@ -100,11 +107,16 @@ print("single trajectory: |error| < 0.05 up to h = %d (t = %.1f); "
          np.argmax(np.abs(p0 - true) > 0.5), np.argmax(np.abs(p1 - true) > 0.5)))
 for w, lab in [(0, "unweighted"), (1, "weighted  ")]:
     e = E[w]
-    print("%s: RMS/sigma = %.4f at h=1, %.3f at h=10, %.3f at h=50, %.2f at h=100, "
+    print("%s: RMS/sigma = %.2e at h=1, %.3f at h=10, %.3f at h=50, %.2f at h=100, "
           "%.2f at h=300, %.2f at h=600; reaches 0.5 at h = %d (t = %.1f, %.2f Lyapunov times); "
           "fitted growth rate over h in %s: %.3f (model lambda_1 = %.3f)"
           % (lab, e[1], e[10], e[50], e[100], e[300], e[600],
              np.argmax(e > 0.5), DT*np.argmax(e > 0.5), LAM1*DT*np.argmax(e > 0.5),
              FITH, lam_fit[w], LAM1))
+hq = np.argmax(E[0] > 0.5)               # unweighted error reaches half sigma
+print("weighting: max |E_w/E_u - 1| over h = 1..%d: %.3f; over h = 1..%d: %.3f"
+      % (hq, np.max(np.abs(E[1][1:hq + 1]/E[0][1:hq + 1] - 1)),
+         NPRED, np.max(np.abs(E[1][1:]/E[0][1:] - 1))))
+print("starts span columns %d..%d; model columns 0..%d" % (starts.min(), starts.max(), NMOD - 1))
 print("wrote Prediction.pdf  (N_model = %d, dt = %g, d = %d, tau = %d, r = %d, ensemble %d)"
       % (NMOD, DT, D, TAU, R, NENS))

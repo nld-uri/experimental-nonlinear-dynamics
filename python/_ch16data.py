@@ -28,7 +28,7 @@ lag1_circ    : circular autocorrelation at lag one, the quantity the FT
 prederr      : normalized RMS one-step-ahead local-linear prediction error,
                out of sample (first half models, second half predicted)
 
-Copyright by David Chelidze. Written for the second edition.
+Copyright by David Chelidze.
 """
 import numpy as np
 from scipy.integrate import solve_ivp

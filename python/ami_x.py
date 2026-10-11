@@ -3,7 +3,7 @@
 Python port of ami_x.m (Appendix A.1.2). The binning helpers come from
 ami.py, so the auto and cross routines cannot drift apart.
 
-Copyright by David Chelidze. Python port for the second edition.
+Copyright by David Chelidze. Python port.
 """
 import numpy as np
 from ami import bin_edges, binned_p, joint_p

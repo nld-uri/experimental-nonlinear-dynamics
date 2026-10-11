@@ -5,7 +5,7 @@ strand weighting, and the final shift-and-average. Kept in one place so
 podfilt and sodfilt cannot drift apart, and so the padding convention is
 stated once.
 
-Copyright by David Chelidze. Python port for the second edition.
+Copyright by David Chelidze. Python port.
 """
 import numpy as np
 from scipy.spatial import cKDTree

@@ -20,7 +20,7 @@ Expected, on the reference machine:
     filters   +6.3 dB (SOD) and +4.6 dB (POD, strands) on 20 % noise
     podfilt   the defaults (cloud, u = 1) gain SNR monotonically
 
-Copyright by David Chelidze. Python port for the second edition.
+Copyright by David Chelidze. Python port.
 """
 import sys
 import numpy as np
